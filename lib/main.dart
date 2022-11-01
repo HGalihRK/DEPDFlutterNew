@@ -19,9 +19,15 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
 
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  bool _hasBeenPressed = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -131,14 +137,125 @@ class MyHomePage extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.all(10),
               child: FloatingActionButton(
-                onPressed: () {},
-                child: const Icon(Icons.heart_broken),
-                backgroundColor: Colors.red,
+                onPressed: () {
+                  setState(() {
+                    _hasBeenPressed = !_hasBeenPressed;
+                  });
+                },
+                child: _hasBeenPressed
+                    ? const Icon(Icons.heart_broken)
+                    : Icon(Icons.favorite),
+                backgroundColor: _hasBeenPressed ? Colors.grey : Colors.red,
+              ),
+            ),
+          ),
+        ),
+        Container(
+          child: Align(
+            alignment: Alignment.bottomRight,
+            child: Container(
+              padding: EdgeInsets.all(10),
+              child: ElevatedButton(
+                child: Text('Book me!',
+                    style: TextStyle(
+                      fontSize: 30,
+                    )),
+                onPressed: () {
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) => Screen2()));
+                },
               ),
             ),
           ),
         )
       ]),
     );
+  }
+}
+
+class Screen2 extends StatefulWidget {
+  @override
+  _Screen2State createState() => _Screen2State();
+}
+
+class _Screen2State extends State<Screen2> {
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+            title: const Text('Book the hotel'),
+            backgroundColor: Colors.blueAccent),
+        body: Container(
+          child: Form(
+              key: _formKey,
+              child: Container(
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Masukkan Nama';
+                          }
+                          return null;
+                        },
+                        decoration: new InputDecoration(
+                            hintText: "Nama Lengkap Anda",
+                            labelText: "Nama Lengkap",
+                            icon: Icon(Icons.people)),
+                      ),
+                      TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Masukkan Email';
+                          }
+                          return null;
+                        },
+                        decoration: new InputDecoration(
+                            hintText: "Email Anda",
+                            labelText: "Email ",
+                            icon: Icon(Icons.people)),
+                      ),
+                      TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Masukkan HP';
+                          }
+                          return null;
+                        },
+                        decoration: new InputDecoration(
+                            hintText: "No HP Anda",
+                            labelText: "No HP Anda",
+                            icon: Icon(Icons.people)),
+                      ),
+                      TextFormField(
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Masukkan Kota';
+                          }
+                          return null;
+                        },
+                        decoration: new InputDecoration(
+                            hintText: "Kota",
+                            labelText: "Kota",
+                            icon: Icon(Icons.people)),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 20.0, right: 20.0),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => MyHomePage()));
+                            }
+                          },
+                          child: Text('Book Now'),
+                        ),
+                      )
+                    ],
+                  ))),
+        ));
   }
 }
